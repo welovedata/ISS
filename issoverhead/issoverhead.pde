@@ -52,11 +52,11 @@ void draw() {
     if (now < highest) {
       // on way to max
       long secsTo = (highest - now) / 1000;
-      value = (int)map(secsTo, 0, (highest-start), 128, 255);
+      value = (int)map(secsTo, (highest-start) / 1000, 0, 128, 255);
     } else {
       // past max
       long secsSince = (end - now) / 1000;
-      value = (int)map(secsSince, (end-highest), 0, 255, 128);
+      value = (int)map(secsSince, (end-highest) / 1000, 0, 255, 128);
     }
   }
   
