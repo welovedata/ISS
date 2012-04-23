@@ -1,6 +1,6 @@
 # ISS tracker 
 
-[Photo of the tracker in action](https://p.twimg.com/ArMjPLTCIAAmHgB.jpg)
+![Photo of the tracker in action](https://p.twimg.com/ArMjPLTCIAAmHgB.jpg)
 
 ## Changelog
 
