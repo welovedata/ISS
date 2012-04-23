@@ -10,8 +10,10 @@ String latitude = "51.76274";
 String longitude = "-1.25793";
 
 long imageUpdatePeriod = 1000 * 60; // 60 seconds
+long dataUpdatePeriod = 1000 * 60 * 60; // 1 hour
 
 Date nextImageUpdate;
+Date nextDataUpdate;
 
 Satellite ISS;
 
@@ -22,6 +24,7 @@ void setup()
   size(300,300);
   setupArduino();
   nextImageUpdate = new Date(0); // unix epoch
+  nextDataUpdate = new Date(0);
   updateStatus (false);
   loadData();
 }
@@ -33,8 +36,45 @@ void setupArduino()
   arduino.pinMode(8, Arduino.OUTPUT); 
 }
 
+void updateStatus (Boolean isVisible)
+{
+  if (isVisible)
+  {
+    arduino.digitalWrite(8, Arduino.LOW);
+    arduino.digitalWrite(13, Arduino.HIGH);
+    println("It's overhead!");
+  }
+  else
+  {
+    arduino.digitalWrite(8, Arduino.HIGH);
+    arduino.digitalWrite(13, Arduino.LOW);
+  }
+}
+
+Boolean satelliteIsVisible ()
+{
+  return false;
+}
+
+void updateBackgroundImage ()
+{
+  Date now = new Date();
+  if (now.after(nextImageUpdate))
+  {
+    println ("Updating orbital position image");
+    long nextUpdate = now.getTime() + imageUpdatePeriod;
+    nextImageUpdate = new Date(nextUpdate);
+    PImage img = loadImage("http://www.heavens-above.com/orbitdisplay.aspx?icon=iss&width=300&height=300&satid=25544", "png");
+    image(img, 0, 0);
+  }
+}
+
 void loadData()
 {
+  println ("Updating orbital data");
+  Date now = new Date();
+  long nextUpdate = now.getTime() + dataUpdatePeriod;
+  nextDataUpdate = new Date(nextUpdate);
   String[] response;
   String data;
   JSONObject json;
@@ -58,39 +98,6 @@ void loadData()
   ISS = new Satellite(json);
 }
 
-void updateStatus (Boolean isVisible)
-{
-  if (isVisible)
-  {
-    arduino.digitalWrite(8, Arduino.HIGH);
-    arduino.digitalWrite(13, Arduino.LOW);
-    println("It's overhead!");
-  }
-  else
-  {
-    arduino.digitalWrite(8, Arduino.LOW);
-    arduino.digitalWrite(13, Arduino.HIGH);
-  }
-}
-
-Boolean satelliteIsVisible ()
-{
-  return false;
-}
-
-void updateBackgroundImage ()
-{
-  Date now = new Date();
-  if (now.after(nextImageUpdate))
-  {
-    println ("Updating orbital position image");
-    long nextUpdate = now.getTime() + imageUpdatePeriod;
-    nextImageUpdate = new Date(nextUpdate);
-    PImage img = loadImage("http://www.heavens-above.com/orbitdisplay.aspx?icon=iss&width=300&height=300&satid=25544", "png");
-    image(img, 0, 0);
-  }
-}
-
 void draw() 
 {
   if (ISS.isOverhead())
@@ -101,9 +108,17 @@ void draw()
   {
     updateStatus(false);
   }
-  // update with latest picture of where satellite is! 
 
-  updateBackgroundImage ();
+  Date now = new Date();
+  if (now.after(nextDataUpdate))
+  {
+    loadData();
+  }
+  if (now.after(nextImageUpdate))
+  {
+    updateBackgroundImage ();
+  }
+
   delay (2000);
 }
 
@@ -147,6 +162,7 @@ class Satellite
 {
   private JSONObject data;
   private ArrayList passes;
+  
   public Satellite (JSONObject data)
   {
     this.passes = new ArrayList ();

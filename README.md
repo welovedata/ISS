@@ -4,6 +4,10 @@
 
 ## Changelog
 
+## v0.2.2
+**Processing code**
+* BUGFIX: Satellite data wasn't refreshed - now updated every hour
+
 ## v0.2.1
 **Processing code**
 * BUGFIX: Led indicators were turned on in the wrong order
