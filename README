@@ -4,7 +4,7 @@
 
 ## v0.2.0 
 ** Processing code **
-* Major refactor
+* Total rewrite
 * Use Firmata to allow Arduiono programming via Processing
 * Pull live data from unnoficial heavens above API - http://uhaapi.com/
 * Add live(ish) tracking map - updated every 60 seconds from http://www.heavens-above.com/
