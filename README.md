@@ -4,6 +4,10 @@
 
 ## Changelog
 
+## v0.2.1
+**Processing code**
+* BUGFIX: Led indicators were turned on in the wrong order
+
 ## v0.2.0 
 **Processing code**
 * Total rewrite
